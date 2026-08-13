@@ -1,0 +1,282 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-0000-4000-8000-000000000001",
+    "name": "Bootcamp Bancario",
+    "description": "Coleccion de verificacion funcional de los microservicios del sistema bancario (proyecto-bootcamp). El enunciado exige que toda funcionalidad se verifique con Postman, sin interfaz grafica. Un folder por microservicio; se va ampliando a medida que se agregan servicios.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "customer-service",
+      "item": [
+        {
+          "name": "Crear cliente personal (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('tiene id', () => pm.expect(pm.response.json().id).to.be.a('string'));",
+                  "if (pm.response.code === 201) {",
+                  "    pm.environment.set('personalCustomerId', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"71234567\",\n  \"firstName\": \"Katherine\",\n  \"lastName\": \"Ramos\"\n}"
+            },
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": ["{{customerServiceUrl}}"],
+              "path": ["customers"]
+            }
+          }
+        },
+        {
+          "name": "Crear cliente empresarial (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) {",
+                  "    pm.environment.set('businessCustomerId', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"BUSINESS\",\n  \"documentType\": \"RUC\",\n  \"documentNumber\": \"20123456789\",\n  \"businessName\": \"Acme SAC\"\n}"
+            },
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": ["{{customerServiceUrl}}"],
+              "path": ["customers"]
+            }
+          }
+        },
+        {
+          "name": "Crear con documentNumber duplicado (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 409', () => pm.response.to.have.status(409));",
+                  "pm.test('body trae correlationId', () => pm.expect(pm.response.json().correlationId).to.be.a('string'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"71234567\",\n  \"firstName\": \"Otro\",\n  \"lastName\": \"Cliente\"\n}"
+            },
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": ["{{customerServiceUrl}}"],
+              "path": ["customers"]
+            }
+          }
+        },
+        {
+          "name": "Crear PERSONAL con businessName - invalido (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('status 400', () => pm.response.to.have.status(400));"],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"99999999\",\n  \"firstName\": \"X\",\n  \"lastName\": \"Y\",\n  \"businessName\": \"No deberia ir\"\n}"
+            },
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": ["{{customerServiceUrl}}"],
+              "path": ["customers"]
+            }
+          }
+        },
+        {
+          "name": "Crear BUSINESS con documento no-RUC - invalido (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('status 400', () => pm.response.to.have.status(400));"],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"BUSINESS\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"88888888\",\n  \"businessName\": \"Otra SAC\"\n}"
+            },
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": ["{{customerServiceUrl}}"],
+              "path": ["customers"]
+            }
+          }
+        },
+        {
+          "name": "Listar clientes (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('es un array', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": ["{{customerServiceUrl}}"],
+              "path": ["customers"]
+            }
+          }
+        },
+        {
+          "name": "Obtener cliente por id (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('status 200', () => pm.response.to.have.status(200));"],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers/{{personalCustomerId}}",
+              "host": ["{{customerServiceUrl}}"],
+              "path": ["customers", "{{personalCustomerId}}"]
+            }
+          }
+        },
+        {
+          "name": "Obtener cliente inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('status 404', () => pm.response.to.have.status(404));"],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers/000000000000000000000000",
+              "host": ["{{customerServiceUrl}}"],
+              "path": ["customers", "000000000000000000000000"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar cliente empresarial (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('status 200', () => pm.response.to.have.status(200));"],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"BUSINESS\",\n  \"documentType\": \"RUC\",\n  \"documentNumber\": \"20123456789\",\n  \"businessName\": \"Acme SAC Actualizada\"\n}"
+            },
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers/{{businessCustomerId}}",
+              "host": ["{{customerServiceUrl}}"],
+              "path": ["customers", "{{businessCustomerId}}"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar cliente empresarial (204)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('status 204', () => pm.response.to.have.status(204));"],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers/{{businessCustomerId}}",
+              "host": ["{{customerServiceUrl}}"],
+              "path": ["customers", "{{businessCustomerId}}"]
+            }
+          }
+        },
+        {
+          "name": "Obtener cliente eliminado - ya no existe (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('status 404', () => pm.response.to.have.status(404));"],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers/{{businessCustomerId}}",
+              "host": ["{{customerServiceUrl}}"],
+              "path": ["customers", "{{businessCustomerId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
