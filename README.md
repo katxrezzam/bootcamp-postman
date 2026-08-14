@@ -17,8 +17,9 @@ grafica (Parte I).
 
 1. Importar ambos archivos en Postman (File &rarr; Import).
 2. Seleccionar el environment "bootcamp-local" arriba a la derecha.
-3. Levantar el microservicio correspondiente (por ahora, `customer-service` en el puerto 8081
-   contra Mongo local).
+3. Levantar los microservicios correspondientes: `customer-service` (8081), `account-service`
+   (8082), `credit-service` (8083) — estos dos ultimos llaman a `customer-service` por REST, asi
+   que para sus folders hace falta `customer-service` levantado tambien, mas Mongo local.
 4. Correr las requests del folder correspondiente **en orden** — varias dependen del resultado de
    la anterior (por ejemplo, "Obtener cliente por id" usa el id que devolvio "Crear cliente
    personal", guardado automaticamente en la variable de environment `personalCustomerId` via un
@@ -31,10 +32,31 @@ esta coleccion: crear personal, crear empresarial, duplicado (409), reglas de ne
 (400 x2), listar, obtener por id, 404, actualizar, eliminar, 404 post-delete. Cada request incluye
 un test script (`pm.test`) que verifica el status code esperado.
 
+## folder `account-service`
+
+23 requests: 2 de setup (crear cliente personal y empresarial en `customer-service`, sus ids
+quedan en `accPersonalCustomerId`/`accBusinessCustomerId` — variables separadas de las del folder
+`customer-service` para no pisarlas), y el resto reproduce el smoke test manual completo: alta de
+cuenta de ahorro personal, limite de 1 cuenta por tipo (D8), cliente/holder/signer inexistente,
+signer vacio rechazado por Bean Validation, cuenta empresarial de ahorro bloqueada (D8), deposito
+sin `Idempotency-Key` (400) y con clave repetida (no duplica el movimiento), retiro valido y con
+fondos insuficientes (422), listar movimientos, `update` re-validando D8 (agregar holder invalido
+falla, agregar signer valido no), y `delete` bloqueado con saldo distinto de cero.
+
+## folder `credit-service`
+
+23 requests: 2 de setup (clientes personal/empresarial), y el resto reproduce el smoke test manual
+completo: alta de credito con cuotas generadas automaticamente, limite de 1 credito **activo** por
+persona (D8 — permite uno nuevo una vez pagado el anterior), cliente inexistente, pago sin
+`Idempotency-Key` (400), pago con monto que no coincide con la cuota (400), pago valido con clave
+repetida (no duplica), pagar las 3 cuotas y confirmar que el credito pasa a `PAID` automaticamente,
+listar pagos, `update`/`delete` bloqueados si ya hay cuotas pagadas pero permitidos si no,
+empresarial con multiples creditos sin limite.
+
 ## Nota de esta sesion
 
 Esta coleccion se armo y se valido como JSON bien formado, pero **no se corrio de punta a punta
-con Newman** (CLI de Postman) porque esta maquina no tiene Node.js instalado. Las mismas 10
-llamadas ya se habian probado a mano con `curl` contra `customer-service` real, con los mismos
-resultados esperados que codifica cada test script — pero vale la pena que la corras una vez en
-Postman antes de darla por buena del todo.
+con Newman** (CLI de Postman) porque esta maquina no tiene Node.js instalado. Las mismas llamadas
+ya se habian probado a mano con `curl` contra los servicios reales, con los mismos resultados
+esperados que codifica cada test script — pero vale la pena que corras ambos folders una vez en
+Postman antes de darlos por buenos del todo.

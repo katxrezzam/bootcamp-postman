@@ -28,15 +28,24 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"71234567\",\n  \"firstName\": \"Katherine\",\n  \"lastName\": \"Ramos\"\n}"
             },
             "url": {
               "raw": "{{customerServiceUrl}}/customers",
-              "host": ["{{customerServiceUrl}}"],
-              "path": ["customers"]
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
             }
           }
         },
@@ -58,15 +67,24 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"customerType\": \"BUSINESS\",\n  \"documentType\": \"RUC\",\n  \"documentNumber\": \"20123456789\",\n  \"businessName\": \"Acme SAC\"\n}"
             },
             "url": {
               "raw": "{{customerServiceUrl}}/customers",
-              "host": ["{{customerServiceUrl}}"],
-              "path": ["customers"]
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
             }
           }
         },
@@ -86,15 +104,24 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"71234567\",\n  \"firstName\": \"Otro\",\n  \"lastName\": \"Cliente\"\n}"
             },
             "url": {
               "raw": "{{customerServiceUrl}}/customers",
-              "host": ["{{customerServiceUrl}}"],
-              "path": ["customers"]
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
             }
           }
         },
@@ -104,22 +131,33 @@
             {
               "listen": "test",
               "script": {
-                "exec": ["pm.test('status 400', () => pm.response.to.have.status(400));"],
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
                 "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"99999999\",\n  \"firstName\": \"X\",\n  \"lastName\": \"Y\",\n  \"businessName\": \"No deberia ir\"\n}"
             },
             "url": {
               "raw": "{{customerServiceUrl}}/customers",
-              "host": ["{{customerServiceUrl}}"],
-              "path": ["customers"]
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
             }
           }
         },
@@ -129,22 +167,33 @@
             {
               "listen": "test",
               "script": {
-                "exec": ["pm.test('status 400', () => pm.response.to.have.status(400));"],
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
                 "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"customerType\": \"BUSINESS\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"88888888\",\n  \"businessName\": \"Otra SAC\"\n}"
             },
             "url": {
               "raw": "{{customerServiceUrl}}/customers",
-              "host": ["{{customerServiceUrl}}"],
-              "path": ["customers"]
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
             }
           }
         },
@@ -166,8 +215,12 @@
             "method": "GET",
             "url": {
               "raw": "{{customerServiceUrl}}/customers",
-              "host": ["{{customerServiceUrl}}"],
-              "path": ["customers"]
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
             }
           }
         },
@@ -177,7 +230,9 @@
             {
               "listen": "test",
               "script": {
-                "exec": ["pm.test('status 200', () => pm.response.to.have.status(200));"],
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));"
+                ],
                 "type": "text/javascript"
               }
             }
@@ -186,8 +241,13 @@
             "method": "GET",
             "url": {
               "raw": "{{customerServiceUrl}}/customers/{{personalCustomerId}}",
-              "host": ["{{customerServiceUrl}}"],
-              "path": ["customers", "{{personalCustomerId}}"]
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers",
+                "{{personalCustomerId}}"
+              ]
             }
           }
         },
@@ -197,7 +257,9 @@
             {
               "listen": "test",
               "script": {
-                "exec": ["pm.test('status 404', () => pm.response.to.have.status(404));"],
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));"
+                ],
                 "type": "text/javascript"
               }
             }
@@ -206,8 +268,13 @@
             "method": "GET",
             "url": {
               "raw": "{{customerServiceUrl}}/customers/000000000000000000000000",
-              "host": ["{{customerServiceUrl}}"],
-              "path": ["customers", "000000000000000000000000"]
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers",
+                "000000000000000000000000"
+              ]
             }
           }
         },
@@ -217,22 +284,34 @@
             {
               "listen": "test",
               "script": {
-                "exec": ["pm.test('status 200', () => pm.response.to.have.status(200));"],
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));"
+                ],
                 "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"customerType\": \"BUSINESS\",\n  \"documentType\": \"RUC\",\n  \"documentNumber\": \"20123456789\",\n  \"businessName\": \"Acme SAC Actualizada\"\n}"
             },
             "url": {
               "raw": "{{customerServiceUrl}}/customers/{{businessCustomerId}}",
-              "host": ["{{customerServiceUrl}}"],
-              "path": ["customers", "{{businessCustomerId}}"]
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers",
+                "{{businessCustomerId}}"
+              ]
             }
           }
         },
@@ -242,7 +321,9 @@
             {
               "listen": "test",
               "script": {
-                "exec": ["pm.test('status 204', () => pm.response.to.have.status(204));"],
+                "exec": [
+                  "pm.test('status 204', () => pm.response.to.have.status(204));"
+                ],
                 "type": "text/javascript"
               }
             }
@@ -251,8 +332,13 @@
             "method": "DELETE",
             "url": {
               "raw": "{{customerServiceUrl}}/customers/{{businessCustomerId}}",
-              "host": ["{{customerServiceUrl}}"],
-              "path": ["customers", "{{businessCustomerId}}"]
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers",
+                "{{businessCustomerId}}"
+              ]
             }
           }
         },
@@ -262,7 +348,9 @@
             {
               "listen": "test",
               "script": {
-                "exec": ["pm.test('status 404', () => pm.response.to.have.status(404));"],
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));"
+                ],
                 "type": "text/javascript"
               }
             }
@@ -271,8 +359,1638 @@
             "method": "GET",
             "url": {
               "raw": "{{customerServiceUrl}}/customers/{{businessCustomerId}}",
-              "host": ["{{customerServiceUrl}}"],
-              "path": ["customers", "{{businessCustomerId}}"]
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers",
+                "{{businessCustomerId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "account-service",
+      "item": [
+        {
+          "name": "Setup: crear cliente PERSONAL para pruebas de cuentas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('accPersonalCustomerId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"90111222\",\n  \"firstName\": \"Postman\",\n  \"lastName\": \"Personal\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Setup: crear cliente BUSINESS para pruebas de cuentas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('accBusinessCustomerId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"BUSINESS\",\n  \"documentType\": \"RUC\",\n  \"documentNumber\": \"20900111222\",\n  \"businessName\": \"Postman SAC\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear cuenta de ahorro personal (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('savingsAccountId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"holders\": [\"{{accPersonalCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 100.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Segunda cuenta de ahorro del mismo cliente - viola D8 (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"holders\": [\"{{accPersonalCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 0\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cuenta para cliente inexistente (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"CHECKING\",\n  \"holders\": [\"000000000000000000000000\"],\n  \"signers\": [],\n  \"openingAmount\": 0\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cuenta empresarial de ahorro - viola D8, solo corriente (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"holders\": [\"{{accBusinessCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 0\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cuenta corriente empresarial con holder+signer reales (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('checkingAccountId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"CHECKING\",\n  \"holders\": [\"{{accBusinessCustomerId}}\"],\n  \"signers\": [\"{{accPersonalCustomerId}}\"],\n  \"openingAmount\": 0\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cuenta con signer vacio - rechazado por Bean Validation (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"CHECKING\",\n  \"holders\": [\"{{accBusinessCustomerId}}\"],\n  \"signers\": [\"\"],\n  \"openingAmount\": 0\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cuenta con signer inventado - no existe en customer-service (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"CHECKING\",\n  \"holders\": [\"{{accBusinessCustomerId}}\"],\n  \"signers\": [\"000000000000000000000000\"],\n  \"openingAmount\": 0\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar cuentas (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener cuenta por id (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{savingsAccountId}}",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{savingsAccountId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener cuenta inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/000000000000000000000000",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "000000000000000000000000"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Deposito SIN Idempotency-Key - obligatorio (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{savingsAccountId}}/deposits",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{savingsAccountId}}",
+                "deposits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Deposito CON Idempotency-Key (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('balance subio a 150', () => pm.expect(pm.response.json().balanceAfter).to.eql(150));",
+                  "pm.environment.set('depositMovementId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-dep-key-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{savingsAccountId}}/deposits",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{savingsAccountId}}",
+                "deposits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reintento con la MISMA Idempotency-Key - no duplica (201, mismo movimiento)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('mismo movimiento que el deposito anterior', () => pm.expect(pm.response.json().id).to.eql(pm.environment.get('depositMovementId')));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-dep-key-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{savingsAccountId}}/deposits",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{savingsAccountId}}",
+                "deposits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Retiro valido (201, balance vuelve a 100)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('balance baja a 100', () => pm.expect(pm.response.json().balanceAfter).to.eql(100));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-wd-key-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{savingsAccountId}}/withdrawals",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{savingsAccountId}}",
+                "withdrawals"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Retiro mayor al saldo - fondos insuficientes (422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 422', () => pm.response.to.have.status(422));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 99999\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-wd-key-2"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{savingsAccountId}}/withdrawals",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{savingsAccountId}}",
+                "withdrawals"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar movimientos de la cuenta (200, 2 movimientos)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('tiene 2 movimientos', () => pm.expect(pm.response.json().length).to.eql(2));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{savingsAccountId}}/movements",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{savingsAccountId}}",
+                "movements"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update: agregar 2do holder a cuenta personal - viola D8 (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"holders\": [\"{{accPersonalCustomerId}}\", \"{{accBusinessCustomerId}}\"],\n  \"signers\": []\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{savingsAccountId}}",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{savingsAccountId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update: agregar signer real a cuenta empresarial (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"holders\": [\"{{accBusinessCustomerId}}\"],\n  \"signers\": [\"{{accPersonalCustomerId}}\"]\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{checkingAccountId}}",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{checkingAccountId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eliminar cuenta con saldo != 0 - bloqueado (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{savingsAccountId}}",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{savingsAccountId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eliminar cuenta con saldo 0 (204)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 204', () => pm.response.to.have.status(204));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{checkingAccountId}}",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{checkingAccountId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener cuenta eliminada - ya no existe (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{checkingAccountId}}",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{checkingAccountId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "credit-service",
+      "item": [
+        {
+          "name": "Setup: crear cliente PERSONAL para pruebas de credito",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('creditPersonalCustomerId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"90333444\",\n  \"firstName\": \"Postman\",\n  \"lastName\": \"Credito\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Setup: crear cliente BUSINESS para pruebas de credito",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('creditBusinessCustomerId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"BUSINESS\",\n  \"documentType\": \"RUC\",\n  \"documentNumber\": \"20900333444\",\n  \"businessName\": \"Postman Credito SAC\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear credito personal 300 en 3 cuotas (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('3 cuotas de 100', () => pm.expect(pm.response.json().installments.length).to.eql(3));",
+                  "pm.environment.set('creditId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{creditPersonalCustomerId}}\",\n  \"totalAmount\": 300.00,\n  \"termMonths\": 3\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Segundo credito para el mismo personal - viola D8 (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{creditPersonalCustomerId}}\",\n  \"totalAmount\": 100.00,\n  \"termMonths\": 1\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Credito para cliente inexistente (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"000000000000000000000000\",\n  \"totalAmount\": 100.00,\n  \"termMonths\": 1\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pagar sin Idempotency-Key - obligatorio (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/{{creditId}}/payments",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{creditId}}",
+                "payments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pagar con monto que no coincide con la cuota (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-cred-pay-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/{{creditId}}/payments",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{creditId}}",
+                "payments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pagar cuota 1 (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('paga la cuota 1', () => pm.expect(pm.response.json().installmentNumber).to.eql(1));",
+                  "pm.environment.set('creditPaymentId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-cred-pay-2"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/{{creditId}}/payments",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{creditId}}",
+                "payments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reintento con la MISMA Idempotency-Key - no duplica (201, mismo pago)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('mismo pago que el anterior', () => pm.expect(pm.response.json().id).to.eql(pm.environment.get('creditPaymentId')));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-cred-pay-2"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/{{creditId}}/payments",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{creditId}}",
+                "payments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pagar cuota 2 (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('paga la cuota 2', () => pm.expect(pm.response.json().installmentNumber).to.eql(2));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-cred-pay-3"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/{{creditId}}/payments",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{creditId}}",
+                "payments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pagar cuota 3 - la ultima, el credito pasa a PAID (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('paga la cuota 3', () => pm.expect(pm.response.json().installmentNumber).to.eql(3));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-cred-pay-4"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/{{creditId}}/payments",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{creditId}}",
+                "payments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener credito - status PAID, 3 cuotas pagadas (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('status PAID', () => pm.expect(pm.response.json().status).to.eql('PAID'));",
+                  "pm.test('3 cuotas pagadas', () => pm.expect(pm.response.json().installments.filter(i => i.paid).length).to.eql(3));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/{{creditId}}",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{creditId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar pagos del credito (200, 3 pagos)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('3 pagos', () => pm.expect(pm.response.json().length).to.eql(3));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/{{creditId}}/payments",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{creditId}}",
+                "payments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Nuevo credito para el mismo personal - ya permitido porque el anterior esta PAID (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('newCreditId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{creditPersonalCustomerId}}\",\n  \"totalAmount\": 600.00,\n  \"termMonths\": 6\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update: credito CON cuotas pagadas - bloqueado (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"totalAmount\": 900.00,\n  \"termMonths\": 9\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/{{creditId}}",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{creditId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update: credito SIN cuotas pagadas - valido (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('termMonths actualizado', () => pm.expect(pm.response.json().termMonths).to.eql(12));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"totalAmount\": 1200.00,\n  \"termMonths\": 12\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/{{newCreditId}}",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{newCreditId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear credito empresarial 1 de 2 (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{creditBusinessCustomerId}}\",\n  \"totalAmount\": 1000.00,\n  \"termMonths\": 10\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear credito empresarial 2 de 2 - sin limite (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{creditBusinessCustomerId}}\",\n  \"totalAmount\": 500.00,\n  \"termMonths\": 5\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar creditos (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener credito inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/000000000000000000000000",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "000000000000000000000000"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete: credito CON cuotas pagadas - bloqueado (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/{{creditId}}",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{creditId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete: credito SIN cuotas pagadas (204)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 204', () => pm.response.to.have.status(204));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/{{newCreditId}}",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{newCreditId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener credito eliminado - ya no existe (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/{{newCreditId}}",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{newCreditId}}"
+              ]
             }
           }
         }
