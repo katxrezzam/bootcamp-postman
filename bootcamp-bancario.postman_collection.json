@@ -3909,6 +3909,457 @@
           }
         }
       ]
+    },
+    {
+      "name": "report-service",
+      "item": [
+        {
+          "name": "Setup: crear cliente para reportes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('reportCustomerId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"90888999\",\n  \"firstName\": \"Postman\",\n  \"lastName\": \"Reporte\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ],
+              "raw": "{{customerServiceUrl}}/customers"
+            }
+          }
+        },
+        {
+          "name": "Setup: crear cuenta y un deposito",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('reportAccountId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"holders\": [\"{{reportCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 100.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ],
+              "raw": "{{accountServiceUrl}}/accounts"
+            }
+          }
+        },
+        {
+          "name": "Setup: deposito en la cuenta de reportes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 20.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-report-dep-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{reportAccountId}}",
+                "deposits"
+              ],
+              "raw": "{{accountServiceUrl}}/accounts/{{reportAccountId}}/deposits"
+            }
+          }
+        },
+        {
+          "name": "Setup: crear credito y un pago",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('reportCreditId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{reportCustomerId}}\",\n  \"totalAmount\": 300.00,\n  \"termMonths\": 3\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits"
+              ],
+              "raw": "{{creditServiceUrl}}/credits"
+            }
+          }
+        },
+        {
+          "name": "Setup: pago del credito de reportes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-report-pay-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{reportCreditId}}",
+                "payments"
+              ],
+              "raw": "{{creditServiceUrl}}/credits/{{reportCreditId}}/payments"
+            }
+          }
+        },
+        {
+          "name": "Setup: crear tarjeta y un consumo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('reportCardId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{reportCustomerId}}\",\n  \"creditLimit\": 500.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards"
+              ],
+              "raw": "{{cardServiceUrl}}/cards"
+            }
+          }
+        },
+        {
+          "name": "Setup: consumo en la tarjeta de reportes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-report-cons-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{reportCardId}}",
+                "consumptions"
+              ],
+              "raw": "{{cardServiceUrl}}/cards/{{reportCardId}}/consumptions"
+            }
+          }
+        },
+        {
+          "name": "Reporte general del cliente: cuenta, credito y tarjeta con sus movimientos (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('1 cuenta con 1 movimiento', () => { pm.expect(body.accounts.length).to.eql(1); pm.expect(body.accounts[0].movements.length).to.eql(1); });",
+                  "pm.test('1 credito con 1 pago', () => { pm.expect(body.credits.length).to.eql(1); pm.expect(body.credits[0].payments.length).to.eql(1); });",
+                  "pm.test('1 tarjeta con 1 movimiento', () => { pm.expect(body.cards.length).to.eql(1); pm.expect(body.cards[0].movements.length).to.eql(1); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{reportServiceUrl}}"
+              ],
+              "path": [
+                "reports",
+                "customers",
+                "{{reportCustomerId}}"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2020-01-01T00:00:00Z"
+                },
+                {
+                  "key": "to",
+                  "value": "2030-01-01T00:00:00Z"
+                }
+              ],
+              "raw": "{{reportServiceUrl}}/reports/customers/{{reportCustomerId}}?from=2020-01-01T00:00:00Z&to=2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "name": "Reporte general sin from/to - rechazado (400, no 500)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{reportServiceUrl}}"
+              ],
+              "path": [
+                "reports",
+                "customers",
+                "{{reportCustomerId}}"
+              ],
+              "raw": "{{reportServiceUrl}}/reports/customers/{{reportCustomerId}}"
+            }
+          }
+        },
+        {
+          "name": "Reporte general de cliente inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{reportServiceUrl}}"
+              ],
+              "path": [
+                "reports",
+                "customers",
+                "cliente-que-no-existe"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2020-01-01T00:00:00Z"
+                },
+                {
+                  "key": "to",
+                  "value": "2030-01-01T00:00:00Z"
+                }
+              ],
+              "raw": "{{reportServiceUrl}}/reports/customers/cliente-que-no-existe?from=2020-01-01T00:00:00Z&to=2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "name": "Ultimos movimientos de la tarjeta (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('trae el consumo cargado', () => pm.expect(pm.response.json().movements.length).to.eql(1));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{reportServiceUrl}}"
+              ],
+              "path": [
+                "reports",
+                "cards",
+                "{{reportCardId}}",
+                "last-movements"
+              ],
+              "raw": "{{reportServiceUrl}}/reports/cards/{{reportCardId}}/last-movements"
+            }
+          }
+        },
+        {
+          "name": "Ultimos movimientos de tarjeta inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{reportServiceUrl}}"
+              ],
+              "path": [
+                "reports",
+                "cards",
+                "tarjeta-que-no-existe",
+                "last-movements"
+              ],
+              "raw": "{{reportServiceUrl}}/reports/cards/tarjeta-que-no-existe/last-movements"
+            }
+          }
+        }
+      ]
     }
   ]
 }
