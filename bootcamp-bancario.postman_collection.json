@@ -1995,6 +1995,721 @@
           }
         }
       ]
+    },
+    {
+      "name": "card-service",
+      "item": [
+        {
+          "name": "Setup: crear cliente PERSONAL para pruebas de tarjeta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('cardPersonalCustomerId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"90555666\",\n  \"firstName\": \"Postman\",\n  \"lastName\": \"Tarjeta\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear tarjeta con limite 500 (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('disponible = limite al crear', () => pm.expect(pm.response.json().availableCredit).to.eql(500));",
+                  "pm.environment.set('cardId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{cardPersonalCustomerId}}\",\n  \"creditLimit\": 500.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Segunda tarjeta para el mismo cliente - sin limite de tarjetas (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('secondCardId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{cardPersonalCustomerId}}\",\n  \"creditLimit\": 200.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Tarjeta para cliente inexistente (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"000000000000000000000000\",\n  \"creditLimit\": 100.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consumo SIN Idempotency-Key - obligatorio (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{cardId}}/consumptions",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{cardId}}",
+                "consumptions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consumo de 300 (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('usedAmountAfter 300', () => pm.expect(pm.response.json().usedAmountAfter).to.eql(300));",
+                  "pm.environment.set('cardConsumptionId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 300.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-card-cons-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{cardId}}/consumptions",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{cardId}}",
+                "consumptions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reintento con la MISMA Idempotency-Key - no duplica (201, mismo movimiento)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('mismo movimiento que el anterior', () => pm.expect(pm.response.json().id).to.eql(pm.environment.get('cardConsumptionId')));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 300.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-card-cons-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{cardId}}/consumptions",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{cardId}}",
+                "consumptions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consumo que supera el disponible (422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 422', () => pm.response.to.have.status(422));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 250.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-card-cons-2"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{cardId}}/consumptions",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{cardId}}",
+                "consumptions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pago de 100 (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('usedAmountAfter 200', () => pm.expect(pm.response.json().usedAmountAfter).to.eql(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-card-pay-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{cardId}}/payments",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{cardId}}",
+                "payments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pago que supera lo adeudado (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 300.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-card-pay-2"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{cardId}}/payments",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{cardId}}",
+                "payments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener tarjeta - usedAmount 200, disponible 300 (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('usedAmount 200', () => pm.expect(pm.response.json().usedAmount).to.eql(200));",
+                  "pm.test('availableCredit 300', () => pm.expect(pm.response.json().availableCredit).to.eql(300));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{cardId}}",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{cardId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar movimientos de la tarjeta (200, 2 movimientos)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('2 movimientos', () => pm.expect(pm.response.json().length).to.eql(2));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{cardId}}/movements",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{cardId}}",
+                "movements"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar tarjetas (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener tarjeta inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/000000000000000000000000",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "000000000000000000000000"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update: tarjeta CON movimientos - bloqueado (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"creditLimit\": 1000.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{cardId}}",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{cardId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update: tarjeta SIN movimientos - valido (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('limite actualizado', () => pm.expect(pm.response.json().creditLimit).to.eql(800));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"creditLimit\": 800.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{secondCardId}}",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{secondCardId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pagar el resto de la deuda para poder eliminar (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('usedAmountAfter 0', () => pm.expect(pm.response.json().usedAmountAfter).to.eql(0));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 200.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-card-pay-3"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{cardId}}/payments",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{cardId}}",
+                "payments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete: tarjeta ya sin saldo pendiente (204)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 204', () => pm.response.to.have.status(204));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{cardId}}",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{cardId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener tarjeta eliminada - ya no existe (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{cardId}}",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{cardId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete: segunda tarjeta sin saldo usado (204)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 204', () => pm.response.to.have.status(204));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{secondCardId}}",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{secondCardId}}"
+              ]
+            }
+          }
+        }
+      ]
     }
   ]
 }

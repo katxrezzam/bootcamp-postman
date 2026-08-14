@@ -18,8 +18,9 @@ grafica (Parte I).
 1. Importar ambos archivos en Postman (File &rarr; Import).
 2. Seleccionar el environment "bootcamp-local" arriba a la derecha.
 3. Levantar los microservicios correspondientes: `customer-service` (8081), `account-service`
-   (8082), `credit-service` (8083) — estos dos ultimos llaman a `customer-service` por REST, asi
-   que para sus folders hace falta `customer-service` levantado tambien, mas Mongo local.
+   (8082), `credit-service` (8083), `card-service` (8084) — los ultimos tres llaman a
+   `customer-service` por REST, asi que para sus folders hace falta `customer-service` levantado
+   tambien, mas Mongo local.
 4. Correr las requests del folder correspondiente **en orden** — varias dependen del resultado de
    la anterior (por ejemplo, "Obtener cliente por id" usa el id que devolvio "Crear cliente
    personal", guardado automaticamente en la variable de environment `personalCustomerId` via un
@@ -52,6 +53,15 @@ persona (D8 — permite uno nuevo una vez pagado el anterior), cliente inexisten
 repetida (no duplica), pagar las 3 cuotas y confirmar que el credito pasa a `PAID` automaticamente,
 listar pagos, `update`/`delete` bloqueados si ya hay cuotas pagadas pero permitidos si no,
 empresarial con multiples creditos sin limite.
+
+## folder `card-service`
+
+20 requests: alta de tarjeta, **segunda tarjeta para el mismo cliente sin bloqueo** (a diferencia
+de cuentas/creditos, tarjetas no tienen limite por cliente), cliente inexistente, consumo sin
+`Idempotency-Key` (400), consumo valido con clave repetida (no duplica), consumo que supera el
+disponible (422), pago valido, pago que supera lo adeudado (400), listar movimientos,
+`update`/`delete` bloqueados si ya hay movimientos o saldo pendiente respectivamente, permitidos
+si no.
 
 ## Nota de esta sesion
 
