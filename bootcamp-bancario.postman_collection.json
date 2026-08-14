@@ -2550,6 +2550,185 @@
           }
         },
         {
+          "name": "Setup: crear cuenta del titular para pagar sus propias cuotas (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('creditPaymentAccountId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"holders\": [\"{{creditPersonalCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 1000.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Setup: crear cliente tercero para pagar credito ajeno",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('creditThirdPartyCustomerId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"90333555\",\n  \"firstName\": \"Postman\",\n  \"lastName\": \"Tercero\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Setup: crear cuenta del tercero para pagar credito ajeno (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('creditThirdPartyAccountId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"holders\": [\"{{creditThirdPartyCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 500.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Setup: crear cuenta con saldo insuficiente para pagos (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('creditLowBalanceAccountId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"CHECKING\",\n  \"holders\": [\"{{creditPersonalCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 10.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: cliente sin deuda vencida - has-overdue-debt responde false (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('sin deuda vencida', () => pm.expect(pm.response.json()).to.eql(false));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/customers/{{creditPersonalCustomerId}}/has-overdue-debt",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "customers",
+                "{{creditPersonalCustomerId}}",
+                "has-overdue-debt"
+              ]
+            }
+          }
+        },
+        {
           "name": "Crear credito personal 300 en 3 cuotas (201)",
           "event": [
             {
@@ -2676,7 +2855,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"amount\": 100.00\n}"
+              "raw": "{\n  \"amount\": 100.00,\n  \"sourceAccountId\": \"{{creditPaymentAccountId}}\"\n}"
             },
             "header": [
               {
@@ -2714,7 +2893,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"amount\": 50.00\n}"
+              "raw": "{\n  \"amount\": 50.00,\n  \"sourceAccountId\": \"{{creditPaymentAccountId}}\"\n}"
             },
             "header": [
               {
@@ -2758,7 +2937,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"amount\": 100.00\n}"
+              "raw": "{\n  \"amount\": 100.00,\n  \"sourceAccountId\": \"{{creditPaymentAccountId}}\"\n}"
             },
             "header": [
               {
@@ -2801,7 +2980,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"amount\": 100.00\n}"
+              "raw": "{\n  \"amount\": 100.00,\n  \"sourceAccountId\": \"{{creditPaymentAccountId}}\"\n}"
             },
             "header": [
               {
@@ -2827,7 +3006,7 @@
           }
         },
         {
-          "name": "Pagar cuota 2 (201)",
+          "name": "Pagar cuota 2 con la cuenta de un tercero (201)",
           "event": [
             {
               "listen": "test",
@@ -2844,12 +3023,54 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"amount\": 100.00\n}"
+              "raw": "{\n  \"amount\": 100.00,\n  \"sourceAccountId\": \"{{creditThirdPartyAccountId}}\"\n}"
             },
             "header": [
               {
                 "key": "Idempotency-Key",
                 "value": "postman-cred-pay-3"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{creditServiceUrl}}/credits/{{creditId}}/payments",
+              "host": [
+                "{{creditServiceUrl}}"
+              ],
+              "path": [
+                "credits",
+                "{{creditId}}",
+                "payments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pagar cuota 3 con fondos insuficientes (422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 422', () => pm.response.to.have.status(422));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00,\n  \"sourceAccountId\": \"{{creditLowBalanceAccountId}}\"\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-cred-pay-insufficient"
               },
               {
                 "key": "Content-Type",
@@ -2887,7 +3108,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"amount\": 100.00\n}"
+              "raw": "{\n  \"amount\": 100.00,\n  \"sourceAccountId\": \"{{creditPaymentAccountId}}\"\n}"
             },
             "header": [
               {
@@ -4178,7 +4399,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"amount\": 100.00\n}"
+              "raw": "{\n  \"amount\": 100.00,\n  \"sourceAccountId\": \"{{reportAccountId}}\"\n}"
             },
             "header": [
               {
@@ -4291,7 +4512,7 @@
                 "exec": [
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const body = pm.response.json();",
-                  "pm.test('1 cuenta con 1 movimiento', () => { pm.expect(body.accounts.length).to.eql(1); pm.expect(body.accounts[0].movements.length).to.eql(1); });",
+                  "pm.test('1 cuenta con 2 movimientos', () => { pm.expect(body.accounts.length).to.eql(1); pm.expect(body.accounts[0].movements.length).to.eql(2); });",
                   "pm.test('1 credito con 1 pago', () => { pm.expect(body.credits.length).to.eql(1); pm.expect(body.credits[0].payments.length).to.eql(1); });",
                   "pm.test('1 tarjeta con 1 movimiento', () => { pm.expect(body.cards.length).to.eql(1); pm.expect(body.cards[0].movements.length).to.eql(1); });"
                 ],
