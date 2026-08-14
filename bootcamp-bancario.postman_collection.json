@@ -1175,6 +1175,734 @@
               ]
             }
           }
+        },
+        {
+          "name": "D8 Setup: crear cliente PERSONAL para cuenta VIP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('vipCustomerId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"90222333\",\n  \"firstName\": \"Postman\",\n  \"lastName\": \"Vip\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8 Setup: crear cliente BUSINESS para cuenta PYME",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('pymeCustomerId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"BUSINESS\",\n  \"documentType\": \"RUC\",\n  \"documentNumber\": \"20900444555\",\n  \"businessName\": \"Postman PYME SAC\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: cuenta VIP sin tarjeta de credito - rechazada (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('mensaje menciona tarjeta de credito', () => pm.expect(pm.response.json().message).to.include('tarjeta de credito'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"profile\": \"VIP\",\n  \"holders\": [\"{{vipCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 600.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: cuenta PYME sin tarjeta de credito - rechazada (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('mensaje menciona tarjeta de credito', () => pm.expect(pm.response.json().message).to.include('tarjeta de credito'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"CHECKING\",\n  \"profile\": \"PYME\",\n  \"holders\": [\"{{pymeCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 0\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8 Setup: crear tarjeta de credito para cliente VIP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{vipCustomerId}}\",\n  \"creditLimit\": 1000.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8 Setup: crear tarjeta de credito para cliente PYME",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{pymeCustomerId}}\",\n  \"creditLimit\": 2000.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: cuenta VIP con tarjeta de credito - creada (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('profile VIP', () => pm.expect(pm.response.json().profile).to.eql('VIP'));",
+                  "pm.environment.set('vipAccountId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"profile\": \"VIP\",\n  \"holders\": [\"{{vipCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 600.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: cuenta PYME con tarjeta de credito - creada (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('profile PYME', () => pm.expect(pm.response.json().profile).to.eql('PYME'));",
+                  "pm.environment.set('pymeAccountId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"CHECKING\",\n  \"profile\": \"PYME\",\n  \"holders\": [\"{{pymeCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 0\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: perfil VIP en cuenta corriente - combinacion invalida (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"CHECKING\",\n  \"profile\": \"VIP\",\n  \"holders\": [\"{{vipCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 0\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: perfil PYME con cliente personal - combinacion invalida (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"CHECKING\",\n  \"profile\": \"PYME\",\n  \"holders\": [\"{{vipCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 0\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8 Setup: crear cliente y cuenta de ahorro para probar comision por exceso",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('feeTestCustomerId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"90444555\",\n  \"firstName\": \"Postman\",\n  \"lastName\": \"Fee\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8 Setup: crear cuenta de ahorro estandar para probar comision por exceso",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('feeTestAccountId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"holders\": [\"{{feeTestCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 1000.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: deposito 1/5 dentro del limite gratuito (201, sin comision)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 10.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-fee-dep-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{feeTestAccountId}}/deposits",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{feeTestAccountId}}",
+                "deposits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: deposito 2/5 dentro del limite gratuito (201, sin comision)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 10.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-fee-dep-2"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{feeTestAccountId}}/deposits",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{feeTestAccountId}}",
+                "deposits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: deposito 3/5 dentro del limite gratuito (201, sin comision)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 10.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-fee-dep-3"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{feeTestAccountId}}/deposits",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{feeTestAccountId}}",
+                "deposits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: deposito 4/5 dentro del limite gratuito (201, sin comision)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 10.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-fee-dep-4"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{feeTestAccountId}}/deposits",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{feeTestAccountId}}",
+                "deposits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: deposito 5/5 dentro del limite gratuito (201, sin comision)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 10.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-fee-dep-5"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{feeTestAccountId}}/deposits",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{feeTestAccountId}}",
+                "deposits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: deposito 6/5 supera el limite mensual - se permite y cobra comision (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('el deposito 6 SI se aplica (no se rechaza)', () => pm.expect(pm.response.json().balanceAfter).to.eql(1060));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 10.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-fee-dep-6"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{feeTestAccountId}}/deposits",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{feeTestAccountId}}",
+                "deposits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: movimientos de la cuenta incluyen la comision FEE cobrada (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const movements = pm.response.json();",
+                  "const fee = movements.find(m => m.type === 'FEE');",
+                  "pm.test('hay un movimiento FEE de 5.00', () => { pm.expect(fee).to.not.be.undefined; pm.expect(fee.amount).to.eql(5); });",
+                  "pm.test('el saldo final de la cuenta descuenta la comision', () => pm.expect(fee.balanceAfter).to.eql(1055));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{feeTestAccountId}}/movements",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{feeTestAccountId}}",
+                "movements"
+              ]
+            }
+          }
         }
       ]
     },
