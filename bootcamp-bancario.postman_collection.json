@@ -1903,6 +1903,477 @@
               ]
             }
           }
+        },
+        {
+          "name": "Transfer Setup: crear cliente origen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('transferSourceCustomerId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"90666777\",\n  \"firstName\": \"Postman\",\n  \"lastName\": \"Origen\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Transfer Setup: crear cliente destino",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('transferDestinationCustomerId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"90777888\",\n  \"firstName\": \"Postman\",\n  \"lastName\": \"Destino\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Transfer Setup: crear cuenta origen (ahorro, 100)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('transferSourceAccountId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"holders\": [\"{{transferSourceCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 100.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Transfer Setup: crear cuenta destino (ahorro, 50)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('transferDestinationAccountId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"holders\": [\"{{transferDestinationCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 50.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Transferencia: origen a destino, 30 (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('saldo origen baja a 70', () => pm.expect(pm.response.json().sourceBalanceAfter).to.eql(70));",
+                  "pm.test('saldo destino sube a 80', () => pm.expect(pm.response.json().destinationBalanceAfter).to.eql(80));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"destinationAccountId\": \"{{transferDestinationAccountId}}\",\n  \"amount\": 30.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-transfer-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{transferSourceAccountId}}/transfers",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{transferSourceAccountId}}",
+                "transfers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Transferencia: reintento con la MISMA Idempotency-Key - no duplica (201, mismo resumen)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('mismo saldo, no se duplico', () => pm.expect(pm.response.json().sourceBalanceAfter).to.eql(70));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"destinationAccountId\": \"{{transferDestinationAccountId}}\",\n  \"amount\": 30.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-transfer-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{transferSourceAccountId}}/transfers",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{transferSourceAccountId}}",
+                "transfers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Transferencia: a la misma cuenta - rechazada (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"destinationAccountId\": \"{{transferSourceAccountId}}\",\n  \"amount\": 10.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-transfer-2"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{transferSourceAccountId}}/transfers",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{transferSourceAccountId}}",
+                "transfers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Transferencia: cuenta destino inexistente - rechazada, no retira nada (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"destinationAccountId\": \"cuenta-que-no-existe\",\n  \"amount\": 10.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-transfer-3"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{transferSourceAccountId}}/transfers",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{transferSourceAccountId}}",
+                "transfers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Transfer Setup: crear cuenta a plazo fijo (dia 1) para forzar la compensacion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('transferFixedTermAccountId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"FIXED_TERM\",\n  \"holders\": [\"{{transferSourceCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 500.00,\n  \"allowedMovementDay\": 1\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Transferencia: destino a plazo fijo fuera de fecha - falla y compensa el retiro (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('el mensaje viene de la regla de plazo fijo, no un error generico', () => pm.expect(pm.response.json().message).to.include('plazo fijo'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"destinationAccountId\": \"{{transferFixedTermAccountId}}\",\n  \"amount\": 20.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-transfer-4"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{transferSourceAccountId}}/transfers",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{transferSourceAccountId}}",
+                "transfers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Transferencia: la compensacion revirtio el retiro, saldo origen intacto (200, sigue en 70)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('saldo origen sigue en 70 (retiro revertido)', () => pm.expect(pm.response.json().balance).to.eql(70));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{transferSourceAccountId}}",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{transferSourceAccountId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Transferencia: reintentar la clave de una transferencia compensada - error claro, no crash (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('mensaje explica que hay que usar una clave nueva', () => pm.expect(pm.response.json().message).to.include('Idempotency-Key'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"destinationAccountId\": \"{{transferFixedTermAccountId}}\",\n  \"amount\": 20.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-transfer-4"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{transferSourceAccountId}}/transfers",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{transferSourceAccountId}}",
+                "transfers"
+              ]
+            }
+          }
         }
       ]
     },
