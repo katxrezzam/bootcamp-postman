@@ -50,6 +50,101 @@
           }
         },
         {
+          "name": "Registrar credenciales (auth-service) (201)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// El registro depende de que auth-service ya haya consumido el evento",
+                  "// Kafka de creacion del cliente (modelo de lectura eventual). Un cliente",
+                  "// recien creado puede tardar unos cientos de ms en propagarse; se espera",
+                  "// un poco antes de intentar el registro para no correr en falso contra",
+                  "// esa carrera (top-level await no soportado en el sandbox de Postman/Newman,",
+                  "// por eso el espera bloqueante en vez de setTimeout+await).",
+                  "const _waitUntil = Date.now() + 800;",
+                  "while (Date.now() < _waitUntil) { /* espera activa corta, a proposito */ }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('tiene username', () => pm.expect(pm.response.json().username).to.eql('kate.postman'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{personalCustomerId}}\",\n  \"username\": \"kate.postman\",\n  \"password\": \"SuperSegura123\"\n}"
+            },
+            "url": {
+              "raw": "{{authServiceUrl}}/auth/register",
+              "host": [
+                "{{authServiceUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Login (auth-service) (200) - guarda authToken",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('tiene token', () => pm.expect(pm.response.json().token).to.be.a('string'));",
+                  "if (pm.response.code === 200) {",
+                  "    pm.environment.set('authToken', pm.response.json().token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"kate.postman\",\n  \"password\": \"SuperSegura123\"\n}"
+            },
+            "url": {
+              "raw": "{{authServiceUrl}}/auth/login",
+              "host": [
+                "{{authServiceUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
           "name": "Crear cliente empresarial (201)",
           "event": [
             {
@@ -4361,5 +4456,15 @@
         }
       ]
     }
-  ]
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  }
 }
