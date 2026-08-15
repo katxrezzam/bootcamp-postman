@@ -5011,6 +5011,522 @@
           }
         }
       ]
+    },
+    {
+      "name": "yanki-service",
+      "item": [
+        {
+          "name": "Crear monedero A con saldo inicial (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{yankiServiceUrl}}/wallets",
+              "host": [
+                "{{yankiServiceUrl}}"
+              ],
+              "path": [
+                "wallets"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"70011111\",\n  \"phone\": \"+51987654301\",\n  \"imei\": \"356938035600001\",\n  \"email\": \"walleta@mail.com\",\n  \"openingBalance\": 200.00\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('saldo inicial 200', () => pm.expect(pm.response.json().balance).to.eql(200));",
+                  "pm.environment.set('walletAId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear monedero B sin saldo inicial (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{yankiServiceUrl}}/wallets",
+              "host": [
+                "{{yankiServiceUrl}}"
+              ],
+              "path": [
+                "wallets"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documentType\": \"CEX\",\n  \"documentNumber\": \"70022222\",\n  \"phone\": \"+51987654302\",\n  \"imei\": \"356938035600002\",\n  \"email\": \"walletb@mail.com\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('saldo inicial 0', () => pm.expect(pm.response.json().balance).to.eql(0));",
+                  "pm.environment.set('walletBId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear monedero con celular repetido (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{yankiServiceUrl}}/wallets",
+              "host": [
+                "{{yankiServiceUrl}}"
+              ],
+              "path": [
+                "wallets"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"70033333\",\n  \"phone\": \"+51987654301\",\n  \"imei\": \"356938035600003\",\n  \"email\": \"otro@mail.com\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 409', () => pm.response.to.have.status(409));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear monedero con email invalido (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{yankiServiceUrl}}/wallets",
+              "host": [
+                "{{yankiServiceUrl}}"
+              ],
+              "path": [
+                "wallets"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"70044444\",\n  \"phone\": \"+51987654303\",\n  \"imei\": \"356938035600004\",\n  \"email\": \"no-es-un-email\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('correlationId', () => pm.expect(pm.response.json().correlationId).to.exist);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener monedero A por id (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{yankiServiceUrl}}/wallets/{{walletAId}}",
+              "host": [
+                "{{yankiServiceUrl}}"
+              ],
+              "path": [
+                "wallets",
+                "{{walletAId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('phone', () => pm.expect(pm.response.json().phone).to.eql('+51987654301'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener monedero inexistente (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{yankiServiceUrl}}/wallets/000000000000000000000000",
+              "host": [
+                "{{yankiServiceUrl}}"
+              ],
+              "path": [
+                "wallets",
+                "000000000000000000000000"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Transferir sin Idempotency-Key - obligatorio (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{yankiServiceUrl}}/wallets/transfers",
+              "host": [
+                "{{yankiServiceUrl}}"
+              ],
+              "path": [
+                "wallets",
+                "transfers"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromPhone\": \"+51987654301\",\n  \"toPhone\": \"+51987654302\",\n  \"amount\": 50.00\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Transferir a uno mismo - rechazada (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-yanki-self"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{yankiServiceUrl}}/wallets/transfers",
+              "host": [
+                "{{yankiServiceUrl}}"
+              ],
+              "path": [
+                "wallets",
+                "transfers"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromPhone\": \"+51987654301\",\n  \"toPhone\": \"+51987654301\",\n  \"amount\": 50.00\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Transferir a un celular inexistente (404)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-yanki-no-existe"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{yankiServiceUrl}}/wallets/transfers",
+              "host": [
+                "{{yankiServiceUrl}}"
+              ],
+              "path": [
+                "wallets",
+                "transfers"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromPhone\": \"+51987654301\",\n  \"toPhone\": \"+51900000000\",\n  \"amount\": 50.00\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Transferir con fondos insuficientes (422)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-yanki-insuf"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{yankiServiceUrl}}/wallets/transfers",
+              "host": [
+                "{{yankiServiceUrl}}"
+              ],
+              "path": [
+                "wallets",
+                "transfers"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromPhone\": \"+51987654302\",\n  \"toPhone\": \"+51987654301\",\n  \"amount\": 10.00\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 422', () => pm.response.to.have.status(422));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Transferencia valida: A envia 50 a B (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-yanki-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{yankiServiceUrl}}/wallets/transfers",
+              "host": [
+                "{{yankiServiceUrl}}"
+              ],
+              "path": [
+                "wallets",
+                "transfers"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromPhone\": \"+51987654301\",\n  \"toPhone\": \"+51987654302\",\n  \"amount\": 50.00\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('fromBalanceAfter 150', () => pm.expect(pm.response.json().fromBalanceAfter).to.eql(150));",
+                  "pm.test('toBalanceAfter 50', () => pm.expect(pm.response.json().toBalanceAfter).to.eql(50));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reintento con la MISMA Idempotency-Key - no duplica (201, mismo resumen)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-yanki-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{yankiServiceUrl}}/wallets/transfers",
+              "host": [
+                "{{yankiServiceUrl}}"
+              ],
+              "path": [
+                "wallets",
+                "transfers"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromPhone\": \"+51987654301\",\n  \"toPhone\": \"+51987654302\",\n  \"amount\": 50.00\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('mismo resumen que el anterior', () => pm.expect(pm.response.json().fromBalanceAfter).to.eql(150));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar movimientos del monedero A (200, 1 envio)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{yankiServiceUrl}}/wallets/{{walletAId}}/movements",
+              "host": [
+                "{{yankiServiceUrl}}"
+              ],
+              "path": [
+                "wallets",
+                "{{walletAId}}",
+                "movements"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('1 movimiento', () => pm.expect(pm.response.json().length).to.eql(1));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar movimientos del monedero B (200, 1 recepcion)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{yankiServiceUrl}}/wallets/{{walletBId}}/movements",
+              "host": [
+                "{{yankiServiceUrl}}"
+              ],
+              "path": [
+                "wallets",
+                "{{walletBId}}",
+                "movements"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('1 movimiento', () => pm.expect(pm.response.json().length).to.eql(1));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
     }
   ],
   "auth": {
