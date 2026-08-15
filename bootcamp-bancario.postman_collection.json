@@ -1436,7 +1436,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": \"{{vipCustomerId}}\",\n  \"creditLimit\": 1000.00\n}"
+              "raw": "{\n  \"cardType\": \"CREDIT\",\n  \"customerId\": \"{{vipCustomerId}}\",\n  \"creditLimit\": 1000.00\n}"
             },
             "header": [
               {
@@ -1472,7 +1472,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": \"{{pymeCustomerId}}\",\n  \"creditLimit\": 2000.00\n}"
+              "raw": "{\n  \"cardType\": \"CREDIT\",\n  \"customerId\": \"{{pymeCustomerId}}\",\n  \"creditLimit\": 2000.00\n}"
             },
             "header": [
               {
@@ -3570,7 +3570,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": \"{{cardPersonalCustomerId}}\",\n  \"creditLimit\": 500.00\n}"
+              "raw": "{\n  \"cardType\": \"CREDIT\",\n  \"customerId\": \"{{cardPersonalCustomerId}}\",\n  \"creditLimit\": 500.00\n}"
             },
             "header": [
               {
@@ -3607,7 +3607,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": \"{{cardPersonalCustomerId}}\",\n  \"creditLimit\": 200.00\n}"
+              "raw": "{\n  \"cardType\": \"CREDIT\",\n  \"customerId\": \"{{cardPersonalCustomerId}}\",\n  \"creditLimit\": 200.00\n}"
             },
             "header": [
               {
@@ -3643,7 +3643,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": \"000000000000000000000000\",\n  \"creditLimit\": 100.00\n}"
+              "raw": "{\n  \"cardType\": \"CREDIT\",\n  \"customerId\": \"000000000000000000000000\",\n  \"creditLimit\": 100.00\n}"
             },
             "header": [
               {
@@ -4223,6 +4223,341 @@
               ]
             }
           }
+        },
+        {
+          "name": "D8 Setup: crear cuenta para tarjeta de debito (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('debitAccountId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"holders\": [\"{{cardPersonalCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 200.00\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8 Setup: crear cliente tercero para probar ownership de debito",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('cardThirdPartyCustomerId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"90333777\",\n  \"firstName\": \"Postman\",\n  \"lastName\": \"TerceroDebito\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{customerServiceUrl}}/customers",
+              "host": [
+                "{{customerServiceUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: tarjeta de debito con cuenta de un tercero - rechazada (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cardType\": \"DEBIT\",\n  \"customerId\": \"{{cardThirdPartyCustomerId}}\",\n  \"accountId\": \"{{debitAccountId}}\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: tarjeta de debito valida (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('cardType DEBIT', () => pm.expect(pm.response.json().cardType).to.eql('DEBIT'));",
+                  "pm.test('sin availableCredit', () => pm.expect(pm.response.json().availableCredit).to.be.null);",
+                  "pm.environment.set('debitCardId', pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cardType\": \"DEBIT\",\n  \"customerId\": \"{{cardPersonalCustomerId}}\",\n  \"accountId\": \"{{debitAccountId}}\"\n}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: compra con debito debita la cuenta real (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-debit-1"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{debitCardId}}/consumptions",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{debitCardId}}",
+                "consumptions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: cuenta origen bajo a 150 tras la compra con debito (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('balance 150', () => pm.expect(pm.response.json().balance).to.eql(150));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{accountServiceUrl}}/accounts/{{debitAccountId}}",
+              "host": [
+                "{{accountServiceUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{debitAccountId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: pagar tarjeta de debito - rechazada, no tiene deuda (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 10.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-debit-2"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{debitCardId}}/payments",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{debitCardId}}",
+                "payments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: compra con debito - fondos insuficientes (422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 422', () => pm.response.to.have.status(422));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 1000.00\n}"
+            },
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-debit-3"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{cardServiceUrl}}/cards/{{debitCardId}}/consumptions",
+              "host": [
+                "{{cardServiceUrl}}"
+              ],
+              "path": [
+                "cards",
+                "{{debitCardId}}",
+                "consumptions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "D8: ultimos movimientos de la tarjeta de debito via report-service (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('trae la compra con debito', () => pm.expect(pm.response.json().movements.length).to.eql(1));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{reportServiceUrl}}/reports/cards/{{debitCardId}}/last-movements",
+              "host": [
+                "{{reportServiceUrl}}"
+              ],
+              "path": [
+                "reports",
+                "cards",
+                "{{debitCardId}}",
+                "last-movements"
+              ]
+            }
+          }
         }
       ]
     },
@@ -4442,7 +4777,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": \"{{reportCustomerId}}\",\n  \"creditLimit\": 500.00\n}"
+              "raw": "{\n  \"cardType\": \"CREDIT\",\n  \"customerId\": \"{{reportCustomerId}}\",\n  \"creditLimit\": 500.00\n}"
             },
             "header": [
               {
