@@ -145,6 +145,35 @@
 					}
 				},
 				{
+					"name": "Probar endpoint protegido sin token - rechazado (401)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 401', () => pm.response.to.have.status(401));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"auth": {
+							"type": "noauth"
+						},
+						"url": {
+							"raw": "{{accountServiceUrl}}/accounts",
+							"host": [
+								"{{accountServiceUrl}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					}
+				},
+				{
 					"name": "Crear cliente empresarial (201)",
 					"event": [
 						{
@@ -598,6 +627,152 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"holders\": [\"{{accPersonalCustomerId}}\"],\n  \"signers\": [],\n  \"openingAmount\": 0\n}"
+						},
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{accountServiceUrl}}/accounts",
+							"host": [
+								"{{accountServiceUrl}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					}
+				},
+				{
+					"name": "Crear cuenta corriente personal para probar limite D8 (201)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 201', () => pm.response.to.have.status(201));",
+									"pm.environment.set('personalCheckingAccountId', pm.response.json().id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountType\": \"CHECKING\",\n  \"holders\": [\n    \"{{accPersonalCustomerId}}\"\n  ],\n  \"signers\": [],\n  \"openingAmount\": 0\n}"
+						},
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{accountServiceUrl}}/accounts",
+							"host": [
+								"{{accountServiceUrl}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					}
+				},
+				{
+					"name": "Segunda cuenta corriente del mismo cliente personal - viola D8 (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 400', () => pm.response.to.have.status(400));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountType\": \"CHECKING\",\n  \"holders\": [\n    \"{{accPersonalCustomerId}}\"\n  ],\n  \"signers\": [],\n  \"openingAmount\": 0\n}"
+						},
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{accountServiceUrl}}/accounts",
+							"host": [
+								"{{accountServiceUrl}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					}
+				},
+				{
+					"name": "Crear cuenta a plazo fijo personal para probar limite D8 (201)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 201', () => pm.response.to.have.status(201));",
+									"pm.environment.set('personalFixedTermAccountId', pm.response.json().id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountType\": \"FIXED_TERM\",\n  \"holders\": [\n    \"{{accPersonalCustomerId}}\"\n  ],\n  \"signers\": [],\n  \"openingAmount\": 0,\n  \"allowedMovementDay\": 1\n}"
+						},
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{accountServiceUrl}}/accounts",
+							"host": [
+								"{{accountServiceUrl}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					}
+				},
+				{
+					"name": "Segunda cuenta a plazo fijo del mismo cliente personal - viola D8 (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 400', () => pm.response.to.have.status(400));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountType\": \"FIXED_TERM\",\n  \"holders\": [\n    \"{{accPersonalCustomerId}}\"\n  ],\n  \"signers\": [],\n  \"openingAmount\": 0,\n  \"allowedMovementDay\": 1\n}"
 						},
 						"header": [
 							{
